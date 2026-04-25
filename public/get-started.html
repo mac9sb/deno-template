@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Get started — My App</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/" class="logo">My App</a>
+      <ul>
+        <li><a href="/about">About</a></li>
+        <li id="nav-auth"><a href="/get-started" class="btn-nav" aria-current="page">Sign in</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="page-centered">
+    <div class="card">
+      <div class="card-header">
+        <h1>Welcome back</h1>
+        <p>Sign in or create an account to get started.</p>
+      </div>
+
+      <p id="magic-notice" class="notice hidden" aria-live="polite"></p>
+
+      <form id="magic-form" method="post" action="/auth/magic-link" novalidate>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            required
+          >
+        </div>
+        <button type="submit" class="btn btn-primary">Send sign-in link</button>
+      </form>
+
+      <div class="divider">or</div>
+
+      <button id="passkey-login" class="btn btn-secondary hidden" type="button">
+        Sign in with a passkey
+      </button>
+    </div>
+  </div>
+
+  <script type="module" src="/client.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signed in — My App</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/" class="logo">My App</a>
+      <ul>
+        <li><a href="/about">About</a></li>
+        <li id="nav-auth"><a href="/get-started">Sign in</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="page-centered">
+    <div class="card">
+      <div class="card-header">
+        <h1>You're signed in</h1>
+        <p>Welcome. You can now access your account.</p>
+      </div>
+
+      <div class="stack">
+        <button id="passkey-register" class="btn btn-secondary hidden" type="button">
+          Add a passkey for faster sign-in
+        </button>
+
+        <form method="post" action="/auth/logout">
+          <button type="submit" class="btn btn-secondary">Sign out</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/client.js"></script>
+</body>
+</html>
