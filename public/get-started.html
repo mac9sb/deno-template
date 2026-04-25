@@ -11,8 +11,19 @@
     <nav>
       <a href="/" class="logo">My App</a>
       <ul>
-        <li><a href="/about">About</a></li>
-        <li id="nav-auth"><a href="/get-started" class="btn-nav" aria-current="page">Sign in</a></li>
+        <li>
+          <a href="/about" data-i18n="nav.about">About</a>
+        </li>
+        <li>
+          <select id="locale-switcher" aria-label="Language">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+          </select>
+        </li>
+        <li id="nav-auth">
+          <a href="/get-started" class="btn-nav" aria-current="page"
+             data-i18n="nav.sign_in">Sign in</a>
+        </li>
       </ul>
     </nav>
   </header>
@@ -20,32 +31,35 @@
   <div class="page-centered">
     <div class="card">
       <div class="card-header">
-        <h1>Welcome back</h1>
-        <p>Sign in or create an account to get started.</p>
+        <h1 data-i18n="get_started.title">Welcome back</h1>
+        <p data-i18n="get_started.subtitle">Sign in or create an account to get started.</p>
       </div>
 
       <p id="magic-notice" class="notice hidden" aria-live="polite"></p>
 
       <form id="magic-form" method="post" action="/auth/magic-link" novalidate>
         <div class="field">
-          <label for="email">Email address</label>
+          <label for="email" data-i18n="get_started.email_label">Email address</label>
           <input
             type="email"
             id="email"
             name="email"
             autocomplete="email"
             placeholder="you@example.com"
+            data-i18n-placeholder="get_started.email_placeholder"
             required
           >
         </div>
-        <button type="submit" class="btn btn-primary">Send sign-in link</button>
+        <button type="submit" class="btn btn-primary"
+                data-i18n="get_started.send_link">Send sign-in link</button>
       </form>
 
-      <div class="divider">or</div>
+      <div class="divider">
+        <span data-i18n="get_started.or">or</span>
+      </div>
 
-      <button id="passkey-login" class="btn btn-secondary hidden" type="button">
-        Sign in with a passkey
-      </button>
+      <button id="passkey-login" class="btn btn-secondary hidden" type="button"
+              data-i18n="get_started.passkey_btn">Sign in with a passkey</button>
     </div>
   </div>
 

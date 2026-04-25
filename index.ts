@@ -34,16 +34,45 @@ const MIME: Record<string, string> = {
   webp: "image/webp",
 };
 
-async function servePublic(pathname: string): Promise<Response> {
+const SUPPORTED_LOCALES = ["en", "fr"];
+
+function detectLocale(req: Request): string {
+  const cookie = req.headers.get("Cookie");
+  if (cookie) {
+    const m = cookie.match(/\blocale=([^;]+)/);
+    if (m && SUPPORTED_LOCALES.includes(m[1])) return m[1];
+  }
+  const acceptLang = req.headers.get("Accept-Language") ?? "";
+  for (const part of acceptLang.split(",")) {
+    const base = part.trim().split(";")[0].split("-")[0].toLowerCase();
+    if (SUPPORTED_LOCALES.includes(base)) return base;
+  }
+  return SUPPORTED_LOCALES[0];
+}
+
+async function servePublic(
+  pathname: string,
+  localeCookie?: string,
+): Promise<Response> {
+  if (pathname.includes("..")) return new Response("Not found", { status: 404 });
   const ext = pathname.split(".").pop() ?? "html";
   try {
     const file = await Deno.readFile(`./public${pathname}`);
-    return new Response(file, {
-      headers: { "Content-Type": MIME[ext] ?? "application/octet-stream" },
-    });
+    const headers: Record<string, string> = {
+      "Content-Type": MIME[ext] ?? "application/octet-stream",
+    };
+    if (localeCookie) {
+      headers["Set-Cookie"] = `locale=${localeCookie}; Path=/; SameSite=Lax`;
+    }
+    return new Response(file, { headers });
   } catch {
     return new Response("Not found", { status: 404 });
   }
+}
+
+function serveHtml(req: Request, path: string): Promise<Response> {
+  const hasLocaleCookie = req.headers.get("Cookie")?.includes("locale=");
+  return servePublic(path, hasLocaleCookie ? undefined : detectLocale(req));
 }
 
 // ── User helpers ──────────────────────────────────────────────────────────────
@@ -83,19 +112,19 @@ router.route("/get-started", {
   get: async (req) => {
     const session = await validateSession(kv, req);
     if (session) return Response.redirect(`${BASE_URL}/auth/success`, 302);
-    return servePublic("/get-started.html");
+    return serveHtml(req, "/get-started.html");
   },
 });
 
 router.route("/about", {
-  get: () => servePublic("/about.html"),
+  get: (req) => serveHtml(req, "/about.html"),
 });
 
 router.route("/auth/success", {
   get: async (req) => {
     const session = await validateSession(kv, req);
     if (!session) return Response.redirect(`${BASE_URL}/get-started`, 302);
-    return servePublic("/auth-success.html");
+    return serveHtml(req, "/auth-success.html");
   },
 });
 
@@ -140,7 +169,7 @@ router.route("/auth/verify", {
     if (!token) return errorResponse("token is required", 400);
 
     const result = await verifyMagicToken(kv, token);
-    if (!result) return servePublic("/link-expired.html");
+    if (!result) return serveHtml(req, "/link-expired.html");
 
     const user = await findOrCreateUser(result.email);
     const { cookie } = await createSession(kv, user.id);
@@ -235,11 +264,10 @@ router.route("/auth/logout", {
 
 // ── Server ────────────────────────────────────────────────────────────────────
 
-const STATIC = new Set(["/styles.css", "/client.js"]);
-
 log.info("server starting", { baseUrl: BASE_URL });
 Deno.serve({ port: 8000 }, (req) => {
   const { pathname } = new URL(req.url);
-  if (STATIC.has(pathname)) return servePublic(pathname);
+  const ext = pathname.split(".").pop() ?? "";
+  if (ext in MIME) return servePublic(pathname);
   return router.handle(req);
 });

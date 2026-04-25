@@ -1,4 +1,15 @@
-// Base64URL ↔ ArrayBuffer helpers (WebAuthn uses binary; JSON transport uses strings)
+import { applyTranslations, fmt, initLocaleSwitcher, t } from "/i18n.js";
+
+// Apply translations before anything else renders
+applyTranslations();
+initLocaleSwitcher();
+
+// Expose fmt on window so inline scripts / future modules can use it
+// e.g. fmt.date(new Date()), fmt.relative(-2, "day")
+globalThis.fmt = fmt;
+
+// ── Base64URL ↔ ArrayBuffer (WebAuthn binary ↔ JSON transport) ────────────────
+
 const b64 = {
   encode: (buf) =>
     btoa(String.fromCharCode(...new Uint8Array(buf)))
@@ -13,7 +24,6 @@ const b64 = {
   },
 };
 
-// Recursively convert Base64URL strings → ArrayBuffers in WebAuthn options
 function decodeOptions(val) {
   if (typeof val === "string") return b64.decode(val);
   if (Array.isArray(val)) return val.map(decodeOptions);
@@ -25,7 +35,6 @@ function decodeOptions(val) {
   return val;
 }
 
-// Encode a WebAuthn PublicKeyCredential for JSON transport
 function encodeCredential(cred) {
   const r = cred.response;
   const encoded = {
@@ -52,7 +61,7 @@ function encodeCredential(cred) {
   return encoded;
 }
 
-// ── Nav: update sign-in/out link based on session ─────────────────────────────
+// ── Nav: swap Sign in → Sign out if session is active ─────────────────────────
 
 async function updateNav() {
   const navAuth = document.getElementById("nav-auth");
@@ -70,7 +79,7 @@ async function updateNav() {
     btn.type = "submit";
     btn.className = "btn-nav";
     btn.style.cssText = "border:none;cursor:pointer;font:inherit";
-    btn.textContent = "Sign out";
+    btn.textContent = t("nav.sign_out");
 
     form.appendChild(btn);
     navAuth.replaceChildren(form);
@@ -91,7 +100,7 @@ function initMagicForm() {
     const email = new FormData(form).get("email");
     const btn = form.querySelector("button[type=submit]");
     btn.disabled = true;
-    btn.textContent = "Sending…";
+    btn.textContent = t("get_started.sending");
     notice.className = "notice hidden";
 
     try {
@@ -103,21 +112,20 @@ function initMagicForm() {
 
       if (res.ok) {
         form.classList.add("hidden");
-        notice.textContent =
-          "Check your inbox — a sign-in link is on its way.";
+        notice.textContent = t("get_started.check_inbox");
         notice.className = "notice info";
       } else {
         const data = await res.json();
-        notice.textContent = data.error ?? "Something went wrong.";
+        notice.textContent = data.error ?? t("get_started.error_generic");
         notice.className = "notice error";
         btn.disabled = false;
-        btn.textContent = "Send sign-in link";
+        btn.textContent = t("get_started.send_link");
       }
     } catch {
-      notice.textContent = "Network error. Please try again.";
+      notice.textContent = t("get_started.error_network");
       notice.className = "notice error";
       btn.disabled = false;
-      btn.textContent = "Send sign-in link";
+      btn.textContent = t("get_started.send_link");
     }
   });
 }
@@ -154,7 +162,7 @@ function initPasskeyLogin() {
       } else {
         const data = await res.json();
         if (notice) {
-          notice.textContent = data.error ?? "Passkey sign-in failed.";
+          notice.textContent = data.error ?? t("passkey.login_failed");
           notice.className = "notice error";
         }
       }
@@ -177,7 +185,7 @@ function initPasskeyRegister() {
   btn.classList.remove("hidden");
   btn.addEventListener("click", async () => {
     btn.disabled = true;
-    btn.textContent = "Opening authenticator…";
+    btn.textContent = t("auth_success.adding_passkey");
 
     try {
       const { options, challengeId } = await fetch(
@@ -196,19 +204,19 @@ function initPasskeyRegister() {
       });
 
       if (res.ok) {
-        btn.textContent = "Passkey added";
+        btn.textContent = t("auth_success.passkey_added");
       } else {
         const data = await res.json();
-        alert(data.error ?? "Registration failed.");
+        alert(data.error ?? t("passkey.register_failed"));
         btn.disabled = false;
-        btn.textContent = "Add a passkey";
+        btn.textContent = t("auth_success.add_passkey");
       }
     } catch (err) {
       if (err.name !== "NotAllowedError" && err.name !== "AbortError") {
         console.error("Passkey registration error:", err);
       }
       btn.disabled = false;
-      btn.textContent = "Add a passkey";
+      btn.textContent = t("auth_success.add_passkey");
     }
   });
 }
