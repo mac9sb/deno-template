@@ -14,6 +14,7 @@ const log = createLogger("app");
 const BASE_URL = Deno.env.get("BASE_URL") ?? "http://localhost:8000";
 const RP_ID = new URL(BASE_URL).hostname;
 const RP_NAME = Deno.env.get("RP_NAME") ?? "My App";
+const APPLE_CLIENT_ID = Deno.env.get("APPLE_CLIENT_ID");
 
 const LOCALES = ["en", "fr"];
 const serve = createStaticHandler({ locales: LOCALES });
@@ -23,7 +24,12 @@ const i18n = await createI18n({ locales: LOCALES });
 
 const router = new Router();
 
-mountAuthRoutes(router, kv, { baseUrl: BASE_URL, rpId: RP_ID, rpName: RP_NAME });
+mountAuthRoutes(router, kv, {
+  baseUrl: BASE_URL,
+  rpId: RP_ID,
+  rpName: RP_NAME,
+  appleClientId: APPLE_CLIENT_ID,
+});
 
 // Stripe: import { mountStripeRoutes } from "@mac9sb/deno-foundation"
 // and call mountStripeRoutes(router, kv, { baseUrl: BASE_URL }) to add billing routes.
