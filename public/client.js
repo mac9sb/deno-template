@@ -228,6 +228,7 @@ function initAppleSignIn() {
   const clientId = document.querySelector('meta[name="apple-client-id"]')?.content;
   if (!btn || !clientId) return;
 
+  if (document.querySelector('script[src*="appleid.cdn-apple.com"]')) return;
   const script = document.createElement("script");
   script.src =
     "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
@@ -261,11 +262,9 @@ function initAppleSignIn() {
           }
         }
       } catch (err) {
-        if (err?.error !== "popup_closed_by_user") {
-          if (notice) {
-            notice.textContent = t("get_started.apple_error");
-            notice.className = "notice error";
-          }
+        if (err?.error !== "popup_closed_by_user" && notice) {
+          notice.textContent = t("get_started.apple_error");
+          notice.className = "notice error";
         }
       } finally {
         btn.disabled = false;
