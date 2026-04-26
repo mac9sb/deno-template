@@ -2,14 +2,14 @@
  * Localisation using native browser APIs.
  *
  * - Locale detection: localStorage → server locale cookie (Accept-Language) → navigator.languages → fallback
- * - Translations loaded via dynamic import() from /locales/<locale>.js
+ * - Translations loaded via fetch() from /locales/<locale>.json
  * - DOM: data-i18n="key" sets textContent, data-i18n-placeholder="key" sets placeholder
  * - RTL: sets document.documentElement.dir automatically
  * - Intl helpers: fmt.date(), fmt.number(), fmt.relative(), fmt.list(), fmt.plural()
  *
  * Adding a language:
  *   1. Add the locale code to SUPPORTED
- *   2. Create public/locales/<code>.js matching the shape of en.js
+ *   2. Create public/locales/<code>.json matching the shape of en.json
  *   3. Add an <option> to the #locale-switcher in each HTML file
  */
 
@@ -37,10 +37,10 @@ export const locale = detect();
 // Load translation messages for the active locale
 let messages = {};
 try {
-  const mod = await import(`/locales/${locale}.js`);
-  messages = mod.default ?? {};
+  const res = await fetch(`/locales/${locale}.json`);
+  if (res.ok) messages = await res.json();
 } catch {
-  // Locale file missing — keys will fall through as-is
+  // Network error — keys will fall through as-is
 }
 
 /**

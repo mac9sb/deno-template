@@ -1,10 +1,8 @@
-export default {
-  // Nav
+{
   "nav.about": "About",
   "nav.sign_in": "Sign in",
   "nav.sign_out": "Sign out",
 
-  // Get started
   "get_started.title": "Welcome back",
   "get_started.subtitle": "Sign in or create an account to get started.",
   "get_started.email_label": "Email address",
@@ -13,34 +11,27 @@ export default {
   "get_started.sending": "Sending…",
   "get_started.or": "or",
   "get_started.passkey_btn": "Sign in with a passkey",
-  "get_started.check_inbox":
-    "Check your inbox — a sign-in link is on its way.",
+  "get_started.check_inbox": "Check your inbox — a sign-in link is on its way.",
   "get_started.error_generic": "Something went wrong.",
   "get_started.error_network": "Network error. Please try again.",
 
-  // Auth success
-  "auth_success.title": "You’re signed in",
+  "auth_success.title": "You're signed in",
   "auth_success.subtitle": "Welcome. You can now access your account.",
   "auth_success.add_passkey": "Add a passkey for faster sign-in",
   "auth_success.adding_passkey": "Opening authenticator…",
   "auth_success.passkey_added": "Passkey added",
   "auth_success.sign_out": "Sign out",
 
-  // About
   "about.title": "About My App",
   "about.subtitle": "Replace this page with a description of your application.",
   "about.built_with": "Built with",
   "about.auth_heading": "Authentication",
-  "about.auth_body":
-    "This app uses passwordless authentication — no passwords to remember or manage. Sign in with a magic link sent to your email, or use a passkey stored on your device.",
+  "about.auth_body": "This app uses passwordless authentication — no passwords to remember or manage. Sign in with a magic link sent to your email, or use a passkey stored on your device.",
 
-  // Link expired
   "link_expired.title": "Link expired",
-  "link_expired.subtitle":
-    "This sign-in link has already been used or has expired.",
+  "link_expired.subtitle": "This sign-in link has already been used or has expired.",
   "link_expired.cta": "Try again",
 
-  // Passkey errors
   "passkey.login_failed": "Passkey sign-in failed.",
-  "passkey.register_failed": "Passkey registration failed.",
-};
+  "passkey.register_failed": "Passkey registration failed."
+}

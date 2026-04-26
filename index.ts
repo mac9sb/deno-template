@@ -1,6 +1,8 @@
 import {
+  createI18n,
   createLogger,
   createStaticHandler,
+  detectLocale,
   mountAuthRoutes,
   Router,
   validateSession,
@@ -13,7 +15,9 @@ const BASE_URL = Deno.env.get("BASE_URL") ?? "http://localhost:8000";
 const RP_ID = new URL(BASE_URL).hostname;
 const RP_NAME = Deno.env.get("RP_NAME") ?? "My App";
 
-const serve = createStaticHandler({ locales: ["en", "fr"] });
+const LOCALES = ["en", "fr"];
+const serve = createStaticHandler({ locales: LOCALES });
+const i18n = await createI18n({ locales: LOCALES });
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 
@@ -51,6 +55,15 @@ router.route("/auth/success", {
 router.route("/link-expired", {
   get: (req) => serve.html(req, "/link-expired.html"),
 });
+
+// Example: server-side translated response
+// router.route("/api/hello", {
+//   get: (req) => {
+//     const locale = detectLocale(req, LOCALES);
+//     const t = i18n.t(locale);
+//     return new Response(t("get_started.title"));
+//   },
+// });
 
 // ── Server ────────────────────────────────────────────────────────────────────
 

@@ -4,6 +4,6 @@
     "start": "deno run --allow-read --allow-net --allow-env --unstable-kv index.ts"
   },
   "imports": {
-    "@mac9sb/deno-foundation": "jsr:@mac9sb/deno-foundation@^0.1.5"
+    "@mac9sb/deno-foundation": "jsr:@mac9sb/deno-foundation@^0.1.7"
   }
 }
