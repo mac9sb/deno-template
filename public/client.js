@@ -221,9 +221,64 @@ function initPasskeyRegister() {
   });
 }
 
+// ── Sign in with Apple ─────────────────────────────────────────────────────────
+
+function initAppleSignIn() {
+  const btn = document.getElementById("apple-signin");
+  const clientId = document.querySelector('meta[name="apple-client-id"]')?.content;
+  if (!btn || !clientId) return;
+
+  const script = document.createElement("script");
+  script.src =
+    "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
+  script.onload = () => {
+    AppleID.auth.init({
+      clientId,
+      scope: "name email",
+      redirectURI: location.origin + "/auth/apple",
+      usePopup: true,
+    });
+
+    btn.classList.remove("hidden");
+    btn.addEventListener("click", async () => {
+      btn.disabled = true;
+      const notice = document.getElementById("magic-notice");
+      try {
+        const data = await AppleID.auth.signIn();
+        const identityToken = data.authorization.id_token;
+        const res = await fetch("/auth/apple", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ identityToken }),
+        });
+        if (res.ok) {
+          location.href = "/auth/success";
+        } else {
+          const body = await res.json();
+          if (notice) {
+            notice.textContent = body.error ?? t("get_started.apple_error");
+            notice.className = "notice error";
+          }
+        }
+      } catch (err) {
+        if (err?.error !== "popup_closed_by_user") {
+          if (notice) {
+            notice.textContent = t("get_started.apple_error");
+            notice.className = "notice error";
+          }
+        }
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  };
+  document.head.appendChild(script);
+}
+
 // ── Boot ───────────────────────────────────────────────────────────────────────
 
 updateNav();
 initMagicForm();
 initPasskeyLogin();
 initPasskeyRegister();
+initAppleSignIn();

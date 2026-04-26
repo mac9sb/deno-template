@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Get started — My App</title>
   <link rel="stylesheet" href="/styles.css">
+  <!-- Set content to your Apple Services ID to enable Sign in with Apple -->
+  <meta name="apple-client-id" content="">
 </head>
 <body>
   <header>
@@ -60,6 +62,13 @@
 
       <button id="passkey-login" class="btn btn-secondary hidden" type="button"
               data-i18n="get_started.passkey_btn">Sign in with a passkey</button>
+
+      <div class="divider">
+        <span data-i18n="get_started.or">or</span>
+      </div>
+
+      <button id="apple-signin" class="btn btn-apple" type="button"
+              data-i18n="get_started.apple_btn">Sign in with Apple</button>
     </div>
   </div>
 

@@ -11,6 +11,8 @@
   "get_started.sending": "Sending…",
   "get_started.or": "or",
   "get_started.passkey_btn": "Sign in with a passkey",
+  "get_started.apple_btn": "Sign in with Apple",
+  "get_started.apple_error": "Sign in with Apple failed.",
   "get_started.check_inbox": "Check your inbox — a sign-in link is on its way.",
   "get_started.error_generic": "Something went wrong.",
   "get_started.error_network": "Network error. Please try again.",

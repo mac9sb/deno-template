@@ -11,6 +11,8 @@
   "get_started.sending": "Envoi…",
   "get_started.or": "ou",
   "get_started.passkey_btn": "Se connecter avec une clé d'accès",
+  "get_started.apple_btn": "Se connecter avec Apple",
+  "get_started.apple_error": "Échec de la connexion avec Apple.",
   "get_started.check_inbox": "Vérifiez votre boîte mail — un lien de connexion est en route.",
   "get_started.error_generic": "Une erreur s'est produite.",
   "get_started.error_network": "Erreur réseau. Veuillez réessayer.",
